@@ -132,6 +132,7 @@ const getProducts = async (req, res) => {
 
         res.status(200).json({
             success: true,
+            count: products.length,
             products
         });
 

@@ -1,222 +1,466 @@
 # Vinayak Jewellers API Documentation
 
+## Base URL
 
-Base URL: http://localhost:3002/api
-
-
+```
+http://localhost:3002/api
+```
 
 ---
 
 # Authentication APIs
 
+## 1. Register Admin
 
-## Register Admin
+**Endpoint**
 
-### POST
-
-/auth/register
-
+```
+POST /auth/register
+```
 
 ### Request Body
 
 ```json
 {
-    "name":"Admin",
-    "email":"admin@gmail.com",
-    "password":"123456"
+  "name": "Admin",
+  "email": "admin@gmail.com",
+  "password": "123456"
 }
-Response
-{
-    "success":true,
-    "message":"User registered successfully"
-}
-Login Admin
-POST
-/auth/login
-Request Body
-{
-    "email":"admin@gmail.com",
-    "password":"123456"
-}
-Response
-{
-    "success":true,
-    "token":"JWT_TOKEN",
-    "user":{
-        "name":"Admin",
-        "email":"admin@gmail.com",
-        "role":"admin"
-    }
-}
-Category APIs
-Create Category
-POST
-/categories
+```
 
-Authorization:
+### Success Response (201 Created)
 
-Bearer Token
+```json
+{
+  "success": true,
+  "message": "User registered successfully. Please login.",
+  "user": {
+    "id": "ADMIN_ID",
+    "name": "Admin",
+    "email": "admin@gmail.com",
+    "role": "admin"
+  }
+}
+```
 
-Body:
+---
+
+## 2. Login Admin
+
+**Endpoint**
+
+```
+POST /auth/login
+```
+
+### Request Body
+
+```json
+{
+  "email": "admin@gmail.com",
+  "password": "123456"
+}
+```
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "token": "JWT_TOKEN",
+  "user": {
+    "id": "ADMIN_ID",
+    "name": "Admin",
+    "email": "admin@gmail.com",
+    "role": "admin"
+  }
+}
+```
+
+---
+
+## 3. Get Admin Profile
+
+**Endpoint**
+
+```
+GET /auth/profile
+```
+
+### Authentication
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "user": {
+    "id": "ADMIN_ID",
+    "name": "Admin",
+    "email": "admin@gmail.com",
+    "role": "admin"
+  }
+}
+```
+
+---
+
+# Category APIs
+
+## 1. Create Category
+
+**Endpoint**
+
+```
+POST /categories
+```
+
+### Authentication
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+### Body (Form Data)
+
+| Field       | Type |
+| ----------- | ---- |
+| name        | Text |
+| description | Text |
+| image       | File |
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "message": "Category created successfully"
+}
+```
+
+---
+
+## 2. Get All Categories
+
+**Endpoint**
+
+```
+GET /categories
+```
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "count": 5,
+  "categories": []
+}
+```
+
+---
+
+## 3. Get Category By ID
+
+**Endpoint**
+
+```
+GET /categories/:id
+```
+
+---
+
+## 4. Update Category
+
+**Endpoint**
+
+```
+PUT /categories/:id
+```
+
+### Authentication
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+### Body
 
 Form Data
 
-name
-description
-image
-Get All Categories
-GET
-/categories
-Get Single Category
-GET
-/categories/:id
-Update Category
-PUT
-/categories/:id
+* name
+* description
+* image
 
-Authorization:
+---
 
-Bearer Token
-Delete Category
-DELETE
-/categories/:id
+## 5. Delete Category
 
-Authorization:
+**Endpoint**
 
-Bearer Token
-SubCategory APIs
-Create SubCategory
-POST
-/subcategories
+```
+DELETE /categories/:id
+```
 
-Authorization:
+### Authentication
 
-Bearer Token
+```
+Authorization: Bearer <JWT_TOKEN>
+```
 
-Body:
+---
 
-Form Data
+# SubCategory APIs
 
-name
-description
-category
-image
-Get All SubCategories
-GET
-/subcategories
-Get Single SubCategory
-GET
-/subcategories/:id
-Update SubCategory
-PUT
-/subcategories/:id
+## 1. Create SubCategory
 
-Authorization:
+**Endpoint**
 
-Bearer Token
-Delete SubCategory
-DELETE
-/subcategories/:id
+```
+POST /subcategories
+```
 
-Authorization:
+### Authentication
 
-Bearer Token
-Product APIs
-Create Product
-POST
-/products
+```
+Authorization: Bearer <JWT_TOKEN>
+```
 
-Authorization:
+### Body (Form Data)
 
-Bearer Token
+| Field       | Type     |
+| ----------- | -------- |
+| name        | Text     |
+| description | Text     |
+| category    | ObjectId |
+| image       | File     |
 
-Body:
+---
 
-Form Data
+## 2. Get All SubCategories
 
-category
+**Endpoint**
 
-subCategory
+```
+GET /subcategories
+```
 
-name
+### Success Response
 
-description
+```json
+{
+  "success": true,
+  "count": 10,
+  "subCategories": []
+}
+```
 
-price
+---
 
-weight
+## 3. Get SubCategory By ID
 
-material
+**Endpoint**
 
-purity
+```
+GET /subcategories/:id
+```
 
-stock
+---
 
-featured
+## 4. Update SubCategory
 
-status
+**Endpoint**
 
-seoTitle
+```
+PUT /subcategories/:id
+```
 
-seoDescription
+### Authentication
 
-images[]
-Get All Products
-GET
-/products
-Get Product By ID
-GET
-/products/:id
-Get Product By SEO Slug
-GET
-/products/slug/:slug
+```
+Authorization: Bearer <JWT_TOKEN>
+```
 
-Example:
+---
 
-/products/slug/gold-diamond-ring
-Update Product
-PUT
-/products/:id
+## 5. Delete SubCategory
 
-Authorization:
+**Endpoint**
 
-Bearer Token
-Delete Product
-DELETE
-/products/:id
+```
+DELETE /subcategories/:id
+```
 
-Authorization:
+### Authentication
 
-Bearer Token
-Authentication Header
+```
+Authorization: Bearer <JWT_TOKEN>
+```
 
-Protected APIs require:
+---
 
-Authorization: Bearer JWT_TOKEN
-Database Relationships
-Category
-    |
-    |
-    |---- SubCategory
-              |
-              |
-              |---- Product
-Technologies Used
+# Product APIs
 
-Backend:
+## 1. Create Product
 
-Node.js
-Express.js
-MongoDB
-Mongoose
-JWT Authentication
-bcrypt Password Encryption
-Multer Image Upload
+**Endpoint**
 
-Frontend:
+```
+POST /products
+```
 
-React.js
-Vite
-Axios
+### Authentication
 
+```
+Authorization: Bearer <JWT_TOKEN>
+```
 
+### Body (Form Data)
+
+| Field          | Type           |
+| -------------- | -------------- |
+| category       | ObjectId       |
+| subCategory    | ObjectId       |
+| name           | Text           |
+| description    | Text           |
+| price          | Number         |
+| weight         | Text           |
+| material       | Text           |
+| purity         | Text           |
+| stock          | Number         |
+| featured       | Boolean        |
+| status         | Boolean        |
+| seoTitle       | Text           |
+| seoDescription | Text           |
+| images         | Multiple Files |
+
+---
+
+## 2. Get All Products
+
+**Endpoint**
+
+```
+GET /products
+```
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "count": 20,
+  "products": []
+}
+```
+
+---
+
+## 3. Get Product By ID
+
+**Endpoint**
+
+```
+GET /products/:id
+```
+
+---
+
+## 4. Get Product By SEO Slug
+
+**Endpoint**
+
+```
+GET /products/slug/:slug
+```
+
+### Example
+
+```
+GET /products/slug/gold-diamond-ring
+```
+
+---
+
+## 5. Update Product
+
+**Endpoint**
+
+```
+PUT /products/:id
+```
+
+### Authentication
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+### Body
+
+Form Data (same as Create Product)
+
+---
+
+## 6. Delete Product
+
+**Endpoint**
+
+```
+DELETE /products/:id
+```
+
+### Authentication
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+# Authentication
+
+All protected APIs require the following header:
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+# Database Relationships
+
+```
+Category (1)
+      │
+      └──────────► SubCategory (Many)
+                         │
+                         └──────────► Product (Many)
+```
+
+---
+
+# Technology Stack
+
+## Backend
+
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT Authentication
+* bcrypt Password Hashing
+* Multer (Image Upload)
+* Slugify
+
+## Frontend
+
+* React.js
+* Vite
+* Axios
+* React Router DOM
+* React Toastify

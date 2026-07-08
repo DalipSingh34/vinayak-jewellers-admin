@@ -57,6 +57,7 @@ const getCategories = async (req, res) => {
 
         res.status(200).json({
             success: true,
+            count: categories.length,
             categories
         });
 
