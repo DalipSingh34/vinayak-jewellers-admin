@@ -1,4 +1,4 @@
-const SubCategory = require("../models/SubCategory.js");
+const SubCategory = require("../models/subCategory.js");
 const Category = require("../models/Category.js");
 const slugify = require("slugify");
 
