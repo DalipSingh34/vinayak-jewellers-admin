@@ -26,27 +26,31 @@ const Products = () => {
         images: []
     });
 
+
     const [editId, setEditId] = useState(null);
+
 
     const editProduct = (product) => {
 
         setEditId(product._id);
 
         setFormData({
+
             category: product.category?._id || "",
             subCategory: product.subCategory?._id || "",
-            name: product.name,
-            description: product.description,
-            price: product.price,
-            weight: product.weight,
-            material: product.material,
-            purity: product.purity,
-            stock: product.stock,
-            featured: product.featured,
-            status: product.status,
-            seoTitle: product.seoTitle,
-            seoDescription: product.seoDescription,
+            name: product.name || "",
+            description: product.description || "",
+            price: product.price || "",
+            weight: product.weight || "",
+            material: product.material || "",
+            purity: product.purity || "",
+            stock: product.stock || "",
+            featured: product.featured || false,
+            status: product.status ?? true,
+            seoTitle: product.seoTitle || "",
+            seoDescription: product.seoDescription || "",
             images: []
+
         });
 
     };
@@ -60,9 +64,13 @@ const Products = () => {
             const categoryRes = await api.get("/categories");
             const subCategoryRes = await api.get("/subcategories");
 
-            setProducts(productRes.data.products);
-            setCategories(categoryRes.data.categories);
-            setSubCategories(subCategoryRes.data.subCategories);
+
+            setProducts(productRes.data.products || []);
+
+            setCategories(categoryRes.data.categories || []);
+
+            setSubCategories(subCategoryRes.data.subCategories || []);
+
 
         } catch (error) {
 
@@ -80,9 +88,11 @@ const Products = () => {
     }, []);
 
 
+
     const handleChange = (e) => {
 
-        const { name, value, type, checked, files } = e.target;
+        const { name, value, type, files } = e.target;
+
 
         if (type === "file") {
 
@@ -93,20 +103,28 @@ const Products = () => {
 
         }
 
-        else if (type === "checkbox") {
+
+        else if (name === "featured" || name === "status") {
 
             setFormData({
+
                 ...formData,
-                [name]: checked
+
+                [name]: value === "true"
+
             });
 
         }
 
+
         else {
 
             setFormData({
+
                 ...formData,
+
                 [name]: value
+
             });
 
         }
@@ -114,15 +132,20 @@ const Products = () => {
     };
 
 
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
+
         try {
+
 
             const data = new FormData();
 
+
             Object.keys(formData).forEach(key => {
+
 
                 if (key !== "images") {
 
@@ -130,7 +153,9 @@ const Products = () => {
 
                 }
 
+
             });
+
 
 
             for (let i = 0; i < formData.images.length; i++) {
@@ -140,29 +165,48 @@ const Products = () => {
             }
 
 
+
             if (editId) {
 
+
                 await api.put(
+
                     `/products/${editId}`,
+
                     data
+
                 );
+
 
                 toast.success("Product Updated");
 
-            } else {
-
-                await api.post(
-                    "/products",
-                    data
-                );
-
-                toast.success("Product Added");
 
             }
 
+            else {
+
+
+                await api.post(
+
+                    "/products",
+
+                    data
+
+                );
+
+
+                toast.success("Product Added");
+
+
+            }
+
+
+
             setEditId(null);
 
+
             setFormData({
+
                 category: "",
                 subCategory: "",
                 name: "",
@@ -177,44 +221,61 @@ const Products = () => {
                 seoTitle: "",
                 seoDescription: "",
                 images: []
+
             });
+
+
 
             getData();
 
-        }
 
+
+        }
 
         catch (error) {
 
+
             toast.error(
+
                 error.response?.data?.message || "Error"
+
             );
+
 
         }
 
+
     };
+
 
 
     const deleteProduct = async (id) => {
 
+
         try {
+
 
             await api.delete(`/products/${id}`);
 
+
             toast.success("Deleted");
 
+
             getData();
+
 
         }
 
         catch (error) {
 
+
             toast.error("Delete failed");
+
 
         }
 
-    };
 
+    };
 
     return (
 
@@ -232,7 +293,9 @@ const Products = () => {
 
                 <h2>
                     {editId ? "Update Product" : "Add Product"}
-                </h2> <br />
+                </h2>
+
+                <br />
 
 
 
@@ -244,9 +307,7 @@ const Products = () => {
 
                         <div className="form-group">
 
-                            <label>
-                                Category
-                            </label>
+                            <label>Category</label>
 
 
                             <select
@@ -282,7 +343,6 @@ const Products = () => {
                                         </option>
 
                                     ))
-
                                 }
 
 
@@ -295,10 +355,7 @@ const Products = () => {
 
                         <div className="form-group">
 
-
-                            <label>
-                                Sub Category
-                            </label>
+                            <label>Sub Category</label>
 
 
                             <select
@@ -312,7 +369,6 @@ const Products = () => {
                                 required
 
                             >
-
 
                                 <option value="">
                                     Select SubCategory
@@ -335,22 +391,19 @@ const Products = () => {
                                         </option>
 
                                     ))
-
                                 }
 
 
                             </select>
 
-
                         </div>
+
 
 
 
                         <div className="form-group">
 
-                            <label>
-                                Product Name
-                            </label>
+                            <label>Product Name</label>
 
 
                             <input
@@ -361,17 +414,18 @@ const Products = () => {
 
                                 onChange={handleChange}
 
+                                required
+
                             />
 
                         </div>
 
 
 
+
                         <div className="form-group">
 
-                            <label>
-                                Price
-                            </label>
+                            <label>Price</label>
 
 
                             <input
@@ -386,16 +440,14 @@ const Products = () => {
 
                             />
 
-
                         </div>
+
 
 
 
                         <div className="form-group">
 
-                            <label>
-                                Weight
-                            </label>
+                            <label>Weight</label>
 
 
                             <input
@@ -415,9 +467,7 @@ const Products = () => {
 
                         <div className="form-group">
 
-                            <label>
-                                Material
-                            </label>
+                            <label>Material</label>
 
 
                             <input
@@ -434,11 +484,10 @@ const Products = () => {
 
 
 
+
                         <div className="form-group">
 
-                            <label>
-                                Purity
-                            </label>
+                            <label>Purity</label>
 
 
                             <input
@@ -455,11 +504,10 @@ const Products = () => {
 
 
 
+
                         <div className="form-group">
 
-                            <label>
-                                Stock
-                            </label>
+                            <label>Stock</label>
 
 
                             <input
@@ -477,17 +525,15 @@ const Products = () => {
                         </div>
 
 
-
                     </div>
+
 
 
 
 
                     <div className="form-group">
 
-                        <label>
-                            Description
-                        </label>
+                        <label>Description</label>
 
 
                         <textarea
@@ -500,8 +546,8 @@ const Products = () => {
 
                         />
 
-
                     </div>
+
 
 
 
@@ -511,9 +557,7 @@ const Products = () => {
 
                         <div className="form-group">
 
-                            <label>
-                                SEO Title
-                            </label>
+                            <label>SEO Title</label>
 
 
                             <input
@@ -526,21 +570,109 @@ const Products = () => {
 
                             />
 
-
                         </div>
+
+
 
 
 
                         <div className="form-group">
 
-                            <label>
-                                Images
-                            </label>
+                            <label>SEO Description</label>
+
+
+                            <textarea
+
+                                name="seoDescription"
+
+                                value={formData.seoDescription}
+
+                                onChange={handleChange}
+
+                            />
+
+                        </div>
+
+
+
+
+
+                        <div className="form-group">
+
+                            <label>Featured</label>
+
+
+                            <select
+
+                                name="featured"
+
+                                value={formData.featured}
+
+                                onChange={handleChange}
+
+                            >
+
+                                <option value={false}>
+                                    No
+                                </option>
+
+
+                                <option value={true}>
+                                    Yes
+                                </option>
+
+
+                            </select>
+
+                        </div>
+
+
+
+
+
+                        <div className="form-group">
+
+                            <label>Status</label>
+
+
+                            <select
+
+                                name="status"
+
+                                value={formData.status}
+
+                                onChange={handleChange}
+
+                            >
+
+                                <option value={true}>
+                                    Active
+                                </option>
+
+
+                                <option value={false}>
+                                    Inactive
+                                </option>
+
+
+                            </select>
+
+                        </div>
+
+
+
+
+
+                        <div className="form-group">
+
+                            <label>Images</label>
 
 
                             <input
 
                                 type="file"
+
+                                name="images"
 
                                 multiple
 
@@ -548,22 +680,21 @@ const Products = () => {
 
                             />
 
-
                         </div>
+
 
 
                     </div>
 
 
 
+
+
                     <br />
 
 
-                    <button
 
-                        className="btn btn-primary"
-
-                    >
+                    <button className="btn btn-primary">
 
                         {
                             editId
@@ -576,10 +707,13 @@ const Products = () => {
                     </button>
 
 
+
                 </form>
 
 
             </div>
+
+
 
 
 
@@ -595,35 +729,22 @@ const Products = () => {
 
                         <tr>
 
-                            <th>
-                                Images
-                            </th>
+                            <th>Images</th>
 
-                            <th>
-                                Product
-                            </th>
+                            <th>Product</th>
 
-                            <th>
-                                Category
-                            </th>
+                            <th>Category</th>
 
-                            <th>
-                                Price
-                            </th>
+                            <th>Price</th>
 
-                            <th>
-                                Stock
-                            </th>
+                            <th>Stock</th>
 
-                            <th>
-                                Actions
-                            </th>
-
+                            <th>Actions</th>
 
                         </tr>
 
-
                     </thead>
+
 
 
 
@@ -631,6 +752,7 @@ const Products = () => {
 
 
                         {
+
                             products.map(product => (
 
 
@@ -664,35 +786,32 @@ const Products = () => {
 
 
 
-                                    <td>
 
+                                    <td>
                                         {product.name}
-
                                     </td>
 
 
 
-                                    <td>
 
+                                    <td>
                                         {product.category?.name}
-
                                     </td>
 
 
 
-                                    <td>
 
+                                    <td>
                                         ₹ {product.price}
-
                                     </td>
+
 
 
 
                                     <td>
-
                                         {product.stock}
-
                                     </td>
+
 
 
 
@@ -715,6 +834,7 @@ const Products = () => {
 
 
 
+
                                         <button
 
                                             className="btn btn-danger"
@@ -731,6 +851,7 @@ const Products = () => {
 
 
                                     </td>
+
 
 
                                 </tr>
@@ -751,10 +872,13 @@ const Products = () => {
 
 
 
+
         </DashboardLayout>
 
     );
 
+
 };
+
 
 export default Products;
